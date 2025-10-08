@@ -99,10 +99,10 @@ public class ContestBot extends TelegramLongPollingBot {
         }
 
         // Формируем сообщение о недостающих подписках
-        StringBuilder sb = new StringBuilder("Подпишись на все группы/каналы ❌\n\n");
+        StringBuilder sb = new StringBuilder("Подписка на все сообщества и каналы — это важно ❗\n\n");
 
         if (!missingVk.isEmpty()) {
-            sb.append("❗Не подписан на VK:\n");
+            sb.append("✅ Не забудьте подписаться на сообщество в VK:\n");
             for (GroupConfig g : missingVk) {
                 sb.append("➡️ <a href=\"https://vk.com/")
                         .append(g.getId()).append("\">")
@@ -114,7 +114,7 @@ public class ContestBot extends TelegramLongPollingBot {
         if (!missingTg.isEmpty()) {
             sb.append("❗Не подписан на Telegram:\n");
             for (ChannelConfig c : missingTg) {
-                String cleanId = c.getId().replace("@", "");
+                String cleanId = c.getName_id().replace("@", "");
                 sb.append("➡️ <a href=\"https://t.me/")
                         .append(cleanId).append("\">")
                         .append(c.getName()).append("</a>\n");
