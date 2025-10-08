@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/subscriptions_check
+    username: postgres
+    password: admin
+  jpa:
+    show-sql: true
+
+bot:
+  username: "@subscriptions_bot"
+  token: 8052695241:AAFqm5LBAGqlDdOra1Q6jQYPQqwFxwSWJ_o
+  telegram_channels:
+
+    - id: "-1002438613938"
+      name: "Загадка | Одежда"
+
+vk:
+  serviceToken: ea00d32eea00d32eea00d32e29e939cd8eeea00ea00d32e82acb916a01c2d062ab49af0
+  apiVersion: "5.131"
+  groups:
+    - id: "fh_electro"
+      name: "Федерация Хоккея городского округа Электросталь"
+    - id: "thepuzzleoutfit"
+      name: "Магазин одежды «Загадка»"

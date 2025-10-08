@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: you
+      changes:
+        - createTable:
+            tableName: contest_users
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: telegram_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: vk_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: joined_at
+                  type: TIMESTAMP
