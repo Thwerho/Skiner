@@ -6,5 +6,6 @@ import lombok.Data;
 public class ChannelConfig
 {
     private String id;
+    private String name_id;
     private String name;
 }

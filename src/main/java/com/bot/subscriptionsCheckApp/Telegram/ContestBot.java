@@ -99,30 +99,30 @@ public class ContestBot extends TelegramLongPollingBot {
         }
 
         // Формируем сообщение о недостающих подписках
-        StringBuilder sb = new StringBuilder("Подпишись на все группы/каналы ❌\n\n");
+        StringBuilder sb = new StringBuilder("\uD83D\uDCCC ВАЖНО — подписка на все сообщества и каналы\n\n");
 
         if (!missingVk.isEmpty()) {
-            sb.append("❗Не подписан на VK:\n");
+            sb.append("✔\uFE0F Cообщество в <b>VK</b>:\n");
             for (GroupConfig g : missingVk) {
-                sb.append("➡️ <a href=\"https://vk.com/")
+                sb.append("<i><a href=\"https://vk.com/")
                         .append(g.getId()).append("\">")
-                        .append(g.getName()).append("</a>\n");
+                        .append(g.getName()).append("</a></i>\n");
             }
             sb.append("\n");
         }
 
         if (!missingTg.isEmpty()) {
-            sb.append("❗Не подписан на Telegram:\n");
+            sb.append("✔\uFE0F <b>Telegram</b>-канал:\n");
             for (ChannelConfig c : missingTg) {
-                String cleanId = c.getId().replace("@", "");
-                sb.append("➡️ <a href=\"https://t.me/")
+                String cleanId = c.getName_id().replace("@", "");
+                sb.append("<i><a href=\"https://t.me/")
                         .append(cleanId).append("\">")
-                        .append(c.getName()).append("</a>\n");
+                        .append(c.getName()).append("</a></i>\n");
             }
             sb.append("\n");
         }
 
-        sb.append("Чтобы проверить подписки, просто пришли ссылку на свой аккаунт в ВК еще раз.");
+        sb.append("Чтобы проверить свои подписки, отправьте ссылку на свой аккаунт в VK ещё раз \uD83D\uDCE9");
 
         reply(chatId, sb.toString());
     }
