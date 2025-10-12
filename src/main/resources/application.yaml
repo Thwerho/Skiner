@@ -4,8 +4,8 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/subscriptions_check
-    username: postgres
-    password: admin
+    username: mollen
+    password: 18020809
   jpa:
     show-sql: true
     hibernate:
