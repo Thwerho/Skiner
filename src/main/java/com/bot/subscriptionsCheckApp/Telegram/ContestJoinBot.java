@@ -5,11 +5,14 @@ import com.bot.subscriptionsCheckApp.Config.VkProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
 import com.bot.subscriptionsCheckApp.Service.ContestService;
+import com.bot.subscriptionsCheckApp.Service.JoinRequestService;
 import com.bot.subscriptionsCheckApp.Service.TgService;
 import com.bot.subscriptionsCheckApp.Service.VkService;
+import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -21,21 +24,36 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@Component
 @RequiredArgsConstructor
-public class ContestBot extends TelegramLongPollingBot {
+public class ContestJoinBot extends TelegramWebhookBot
+{
     private final BotProperties props;
     private final VkProperties vkProps;
     private final VkService vkService;
     private final TgService tgService;
     private final ContestService contestService;
 
-    @Override
-    public void onUpdateReceived(Update update) {
+    private final JoinRequestListener joinRequestListener; // внедрение обработчика
+    private final JoinRequestService joinRequestService;
+
+    @PostConstruct
+    public void init()
+    {
+        joinRequestService.setBot(this);
+    }
+
+
+    private void handleUpdate(Update update)
+    {
+
+        //включаем обработку заявок
+        joinRequestListener.onUpdate(update);
+
+
+        // обработка сообщений в бота
         if (update.hasMessage() && update.getMessage().hasText()) {
             Long chatId = update.getMessage().getChatId();
             Long userId = update.getMessage().getFrom().getId();
-            String username = update.getMessage().getFrom().getUserName();
             String text = update.getMessage().getText();
             String vkId;
 
@@ -53,6 +71,7 @@ public class ContestBot extends TelegramLongPollingBot {
             }
         }
 
+        // обработка включения пользователя в БД
         if (update.hasCallbackQuery()) {
             String data = update.getCallbackQuery().getData();
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
@@ -66,6 +85,7 @@ public class ContestBot extends TelegramLongPollingBot {
             }
         }
     }
+
 
     /**
      * Проверяет подписки VK и Telegram
@@ -170,6 +190,19 @@ public class ContestBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return props.getToken();
+    }
+
+    @Override
+    public String getBotPath()
+    {
+        return "/webhook";
+    }
+
+    @Override
+    public BotApiMethod<?> onWebhookUpdateReceived(Update update)
+    {
+        handleUpdate(update);
+        return null; // если ничего не нужно возвращать в тг
     }
 
     /**

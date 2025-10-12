@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/subscriptions_check
@@ -9,8 +12,9 @@ spring:
       ddl-auto: update
 
 bot:
-  username: "@subscriptions_bot"
-  token: 8052695241:AAFqm5LBAGqlDdOra1Q6jQYPQqwFxwSWJ_o
+  username: "@fhelhockey_bot"
+  token: 8368777417:AAFwwqL_YB-MiP6wdlnbbBbWoseiv1T-BxA
+  webhookUrl: https://95.142.37.46/webhook
   telegram_channels:
     - id: "-1001650728463"
       name_id: "fhelhockey"

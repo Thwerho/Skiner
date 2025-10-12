@@ -16,5 +16,6 @@ public class BotProperties
 {
     private String username;
     private String token;
+    private String webhookUrl;
     private List<ChannelConfig> telegramChannels;
 }
