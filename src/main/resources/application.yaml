@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/subscriptions_check
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/contestbot
+    username: mollen
+    password: 929s
   jpa:
     show-sql: true
     hibernate:
