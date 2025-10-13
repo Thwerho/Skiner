@@ -28,7 +28,7 @@ public class TelegramBeansConfig {
     @Bean
     public SetWebhook setWebhookInstance()
     {
-        return SetWebhook.builder().url("https://fioricet-marie-ahead-taylor.trycloudflare.com/webhook").build();
+        return SetWebhook.builder().url(botProperties.getWebhookUrl()).build();
     }
 
     @Bean
