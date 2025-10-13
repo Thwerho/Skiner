@@ -14,7 +14,7 @@ spring:
 bot:
   username: fhelhockey_bot
   token: 8368777417:AAFwwqL_YB-MiP6wdlnbbBbWoseiv1T-BxA
-  webhook-path: https://fioricet-marie-ahead-taylor.trycloudflare.com/webhook
+  webhook-path: https://disposal-ham-losses-refined.trycloudflare.com
   telegram_channels:
     - id: "-1001650728463"
       name_id: "fhelhockey"
