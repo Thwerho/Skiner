@@ -14,7 +14,7 @@ spring:
 bot:
   username: "@fhelhockey_bot"
   token: 8368777417:AAFwwqL_YB-MiP6wdlnbbBbWoseiv1T-BxA
-  webhookUrl: https://randomname.trycloudflare.com/webhook
+  webhookUrl: https://disposal-ham-losses-refined.trycloudflare.com/webhook
   telegram_channels:
     - id: "-1001650728463"
       name_id: "fhelhockey"
