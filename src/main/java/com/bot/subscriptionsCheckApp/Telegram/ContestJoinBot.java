@@ -11,6 +11,7 @@ import com.bot.subscriptionsCheckApp.Service.VkService;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Component
 @RequiredArgsConstructor
 public class ContestJoinBot extends TelegramLongPollingBot
 {
@@ -41,10 +43,10 @@ public class ContestJoinBot extends TelegramLongPollingBot
         joinRequestService.setBot(this);
     }
 
-
     @Override
     public void onUpdateReceived(Update update)
     {
+
 
         //включаем обработку заявок
         joinRequestListener.onUpdate(update);

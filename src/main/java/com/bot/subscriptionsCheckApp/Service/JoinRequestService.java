@@ -21,8 +21,7 @@ public class JoinRequestService
     private TelegramLongPollingBot bot; // внедрение TelegramLongPollingBot -> ContestJoinBot
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public void setBot(ContestJoinBot bot)
-    {
+    public void setBot(TelegramLongPollingBot bot) {
         this.bot = bot;
     }
 
