@@ -7,6 +7,7 @@ import com.bot.subscriptionsCheckApp.Service.VkService;
 import com.bot.subscriptionsCheckApp.Telegram.ContestJoinBot;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.meta.api.methods.updates.SetWebhook;
@@ -27,7 +28,7 @@ public class TelegramBeansConfig {
     @Bean
     public SetWebhook setWebhookInstance()
     {
-        return SetWebhook.builder().url(botProperties.getWebhookUrl()).build();
+        return SetWebhook.builder().url("https://fioricet-marie-ahead-taylor.trycloudflare.com/webhook").build();
     }
 
     @Bean
