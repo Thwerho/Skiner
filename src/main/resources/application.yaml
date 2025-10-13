@@ -14,7 +14,7 @@ spring:
 bot:
   username: fhelhockey_bot
   token: 8368777417:AAFwwqL_YB-MiP6wdlnbbBbWoseiv1T-BxA
-  webhook-path: https://bot.contestbot.com/webhook
+  webhook-path: bot.contestbot.com
   telegram_channels:
     - id: "-1001650728463"
       name_id: "fhelhockey"
