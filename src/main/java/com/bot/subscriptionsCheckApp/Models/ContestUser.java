@@ -25,7 +25,7 @@ public class ContestUser
     @Column(name = "telegram_id", nullable = false, unique = true)
     private Long telegramId;
 
-    @Column(name = "tg_username", nullable = false, unique = true)
+    @Column(name = "tg_username", nullable = false, unique = false)
     private String telegramUsername;
 
     @Column(name = "time_joined", nullable = false)

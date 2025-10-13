@@ -62,8 +62,11 @@ public class ContestJoinBot extends TelegramLongPollingBot
             List<String> greetings = Arrays.asList("/start", "привет", "ку",
                     "как дела?", "здорово", "дарова", "здарова", "здравствуйте");
 
-            if (greetings.stream().anyMatch(message -> text.matches(".*" + message + ".*"))) {
-                reply(chatId, "Привет! Отправь свой VK ID или ссылку.");
+            if (greetings.stream().anyMatch(message -> text.matches(".*" + message + ".*"))
+                    || text.matches("/check_subscriptions")) {
+                reply(chatId, "Привет! Отправь ссылку на свою страницу в ВК.\n" +
+                        "<b>Пример: vk.com/ВАШ_ЮЗЕРНЕЙМ\n" +
+                        "Пример: https://vk.com/ВАШ_ЮЗЕРНЕЙМ</b>\n");
             } else if (text.matches(".*vk.com/.*")) {
                 vkId = parseVkId(text);
                 checkSubscriptions(chatId, userId, vkId);
@@ -78,7 +81,17 @@ public class ContestJoinBot extends TelegramLongPollingBot
             String data = update.getCallbackQuery().getData();
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
             Long userId = update.getCallbackQuery().getFrom().getId();
-            String username = update.getCallbackQuery().getFrom().getUserName();
+
+            String username;
+            if(update.getCallbackQuery().getFrom().getUserName() == (null))
+            {
+                username = "null";
+            }
+            else
+            {
+                username = update.getCallbackQuery().getFrom().getUserName();
+            }
+
 
             if (data.startsWith("join_")) {
                 String vkId = data.substring(5); // теперь строка, а не Long.parseLong
@@ -137,8 +150,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
             sb.append("✔\uFE0F <b>Telegram</b>-канал:\n");
             for (ChannelConfig c : missingTg) {
                 String cleanId = c.getName_id().replace("@", "");
-                sb.append("<i><a href=\"https://t.me/")
-                        .append(cleanId).append("\">")
+                sb.append("<i><a href=\"https://t.me/+9VBfvYszQRoxNDMy").append("\">")
                         .append(c.getName()).append("</a></i>\n");
             }
             sb.append("\n");

@@ -1,17 +1,19 @@
 package com.bot.subscriptionsCheckApp.Service;
 
-import com.bot.subscriptionsCheckApp.Telegram.ContestJoinBot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ApproveChatJoinRequest;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.bots.*;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +35,6 @@ public class JoinRequestService
 
         System.out.printf("Новая заявка от @%s — одобрю через 30 секунд...%n",
                 user.getUserName());
-
         // Планируем задачу через 30 секунд
         scheduler.schedule(() -> {
             try {
@@ -44,4 +45,5 @@ public class JoinRequestService
             }
         }, 30, TimeUnit.SECONDS);
     }
+
 }
