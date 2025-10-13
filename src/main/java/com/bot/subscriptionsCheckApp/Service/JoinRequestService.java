@@ -1,12 +1,13 @@
 package com.bot.subscriptionsCheckApp.Service;
 
+import com.bot.subscriptionsCheckApp.Telegram.ContestJoinBot;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.ApproveChatJoinRequest;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.generics.TelegramBot;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,10 +18,10 @@ import java.util.concurrent.TimeUnit;
 @EnableScheduling
 public class JoinRequestService
 {
-    private TelegramWebhookBot bot; // внедрение TelegramLongPollingBot -> ContestJoinBot
+    private TelegramLongPollingBot bot; // внедрение TelegramLongPollingBot -> ContestJoinBot
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public void setBot(TelegramWebhookBot bot)
+    public void setBot(ContestJoinBot bot)
     {
         this.bot = bot;
     }

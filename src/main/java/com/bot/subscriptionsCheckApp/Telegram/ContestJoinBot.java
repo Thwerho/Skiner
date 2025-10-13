@@ -11,8 +11,7 @@ import com.bot.subscriptionsCheckApp.Service.VkService;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.telegram.telegrambots.bots.TelegramWebhookBot;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class ContestJoinBot extends TelegramWebhookBot
+public class ContestJoinBot extends TelegramLongPollingBot
 {
     private final BotProperties props;
     private final VkProperties vkProps;
@@ -43,7 +42,8 @@ public class ContestJoinBot extends TelegramWebhookBot
     }
 
 
-    private void handleUpdate(Update update)
+    @Override
+    public void onUpdateReceived(Update update)
     {
 
         //включаем обработку заявок
@@ -193,17 +193,10 @@ public class ContestJoinBot extends TelegramWebhookBot
     }
 
     @Override
-    public String getBotPath()
-    {
-        return "/webhook";
+    public void onRegister() {
+        super.onRegister();
     }
 
-    @Override
-    public BotApiMethod<?> onWebhookUpdateReceived(Update update)
-    {
-        handleUpdate(update);
-        return null; // если ничего не нужно возвращать в тг
-    }
 
     /**
      * Парсинг VK ID (число или username из ссылки)
