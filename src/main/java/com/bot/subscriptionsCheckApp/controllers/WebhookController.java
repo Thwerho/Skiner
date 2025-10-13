@@ -10,14 +10,13 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @RestController
-@RequestMapping("/webhook")
 @RequiredArgsConstructor
 public class WebhookController
 {
 
     private final ContestJoinBot contestJoinBot;
 
-    @PostMapping
+    @PostMapping("webhook")
     public BotApiMethod<?> onUpdateReceived(@RequestBody Update update)
     {
         return contestJoinBot.onWebhookUpdateReceived(update);
