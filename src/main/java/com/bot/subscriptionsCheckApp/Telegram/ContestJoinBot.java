@@ -156,7 +156,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
             sb.append("\n");
         }
 
-        sb.append("Чтобы проверить свои подписки, отправьте ссылку на свой аккаунт в VK ещё раз \uD83D\uDCE9");
+        sb.append("Чтобы проверить свои подписки, отправьте ссылку на свою страницу в ВК ещё раз \uD83D\uDCE9");
 
         reply(chatId, sb.toString());
     }
