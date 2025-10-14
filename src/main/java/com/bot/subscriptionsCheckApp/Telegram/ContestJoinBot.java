@@ -35,7 +35,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
     private final ContestService contestService;
 
     private final JoinRequestListener joinRequestListener; // внедрение обработчика
-    private final JoinRequestService joinRequestService;
+    private final JoinRequestService joinRequestService; // внедрение сервиса обработчика
 
     @PostConstruct
     public void init()
