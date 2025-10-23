@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface ContestUserRepository extends JpaRepository<ContestUser, Long>
 {
     Optional<ContestUser> findByTelegramId(Long telegram_id);
+
 }

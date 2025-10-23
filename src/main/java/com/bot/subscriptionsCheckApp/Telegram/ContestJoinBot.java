@@ -4,10 +4,7 @@ import com.bot.subscriptionsCheckApp.Config.BotProperties;
 import com.bot.subscriptionsCheckApp.Config.VkProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
-import com.bot.subscriptionsCheckApp.Service.ContestService;
-import com.bot.subscriptionsCheckApp.Service.JoinRequestService;
-import com.bot.subscriptionsCheckApp.Service.TgService;
-import com.bot.subscriptionsCheckApp.Service.VkService;
+import com.bot.subscriptionsCheckApp.Service.*;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +34,9 @@ public class ContestJoinBot extends TelegramLongPollingBot
     private final JoinRequestListener joinRequestListener; // внедрение обработчика
     private final JoinRequestService joinRequestService; // внедрение сервиса обработчика
 
+    private final SubsCheckService subsCheckService; // сервис проверки на отписку
+
+
     @PostConstruct
     public void init()
     {
@@ -47,10 +47,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
     public void onUpdateReceived(Update update)
     {
 
-
-        //включаем обработку заявок
-        joinRequestListener.onUpdate(update);
-
+        joinRequestListener.onUpdate(update); //включаем обработку заявок
 
         // обработка сообщений в бота
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -219,4 +216,5 @@ public class ContestJoinBot extends TelegramLongPollingBot
         if (input.matches("\\d+")) return input; // если ввели число
         return input.replaceAll(".*vk.com/", "").replaceAll("[^a-zA-Z0-9_]", "");
     }
+
 }

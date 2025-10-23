@@ -1,6 +1,7 @@
 package com.bot.subscriptionsCheckApp.Service;
 
 import com.bot.subscriptionsCheckApp.Config.VkProperties;
+import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

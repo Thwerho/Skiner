@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class ContestService {
     private final ContestUserRepository repo;
 
+
     public boolean addParticipant(Long tgId, String username, String vkId) {
         if (repo.findByTelegramId(tgId).isPresent()) {
             return false; // уже участвует
@@ -25,4 +26,14 @@ public class ContestService {
         repo.save(user);
         return true;
     }
+
+    public void deleteParticipant(Long tgId, String username, String vkId) {
+            ContestUser user = ContestUser.builder()
+                    .telegramId(tgId)
+                    .telegramUsername(username)
+                    .vk_id(vkId)
+                    .time_joined(LocalDateTime.now())
+                    .build();
+            repo.deleteById(user.getId());
+        }
 }
