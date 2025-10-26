@@ -27,7 +27,7 @@ public class ContestService {
         return true;
     }
 
-    public void deleteParticipant(Long tgId, String username, String vkId) {
+    public void deleteParticipantById(Long tgId, String username, String vkId) {
             ContestUser user = ContestUser.builder()
                     .telegramId(tgId)
                     .telegramUsername(username)
@@ -35,5 +35,11 @@ public class ContestService {
                     .time_joined(LocalDateTime.now())
                     .build();
             repo.deleteById(user.getId());
+
         }
+
+    public void deleteParticipant(ContestUser user)
+    {
+        repo.delete(user);
+    }
 }

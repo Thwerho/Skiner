@@ -39,13 +39,21 @@ public class SubsCheckService
 
             for(ContestUser user : users)
             {
-                log.info("Пользователь: {}", user.getTelegramId());
+                log.info("Проверка пользователя: {}", user.getTelegramId());
+
+
                 checkTgSubscriptions(user);
+
                 checkVkSubscriptions(user);
+
             }
+
         } catch (Exception e) {
-            log.error("Ошибка при выполнении проверки подписок: ", e);
+            log.error("Ошибка при выполнении проверки подписок: \n", e);
         }
+
+        System.out.println("_____________________________" +
+                "____________________________________________________________________");
 
     }
 
@@ -58,10 +66,13 @@ public class SubsCheckService
             {
                 if (!tgService.isMember(user.getTelegramId(), channel.getId())) // если пользователь не состоит в канале
                 {
-                    contestService.deleteParticipant(user.getTelegramId(), user.getTelegramUsername(), user.getVk_id()); // удаление из бд
-                    log.info("Пользователь {} удален, отписан от telegram.\n", user.getTelegramId());
+                    contestService.deleteParticipant(user); // удаление из бд
+
+                    log.info("Tg API: пользователь {} удален, отписан от telegram: {} .\n",
+                            user.getTelegramId(), channel.getName_id());
                 }
             }
+            log.info("Tg API: проверка пройдена успешно.");
         }
         catch (Exception e)
         {
@@ -73,15 +84,15 @@ public class SubsCheckService
     {
         for (GroupConfig group : vkProps.getGroups()) // проходимся по всем группам из application.yaml
         {
-            if (!vkService.areMembers(
-                            vkProps.getGroups().stream().map(GroupConfig::getId).toList(),
-                            user.getVk_id())
-                    .get(group.getId()))
+
+            if (vkService.areMembers(group, user.getVk_id()))
             {
-                contestService.deleteParticipant(user.getTelegramId(), user.getTelegramUsername(), user.getVk_id());
-                log.info("Пользователь {} удален, отписан от vk.\n", user.getVk_id());
+                contestService.deleteParticipant(user);
+                log.info("VK API: Пользователь {} удален, отписан от vk: {}.\n", user.getVk_id(), group.getName());
             }
         }
+
+        log.info("VK API: проверка пройдена успешно.");
     }
 
 }

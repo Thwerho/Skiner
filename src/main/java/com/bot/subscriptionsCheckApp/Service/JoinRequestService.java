@@ -1,6 +1,7 @@
 package com.bot.subscriptionsCheckApp.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 @EnableScheduling
+@Slf4j
 public class JoinRequestService
 {
     private TelegramLongPollingBot bot; // внедрение TelegramLongPollingBot -> ContestJoinBot
@@ -39,7 +41,7 @@ public class JoinRequestService
                 bot.execute(new ApproveChatJoinRequest(chatId.toString(), user.getId()));
                 System.out.printf("Заявка от @%s одобрена%n", user.getUserName());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.info(e.getMessage());
             }
         }, 30, TimeUnit.SECONDS);
     }

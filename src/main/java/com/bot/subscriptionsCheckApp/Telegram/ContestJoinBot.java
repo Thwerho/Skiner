@@ -8,6 +8,7 @@ import com.bot.subscriptionsCheckApp.Service.*;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,10 +20,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ContestJoinBot extends TelegramLongPollingBot
 {
     private final BotProperties props;
@@ -34,7 +35,6 @@ public class ContestJoinBot extends TelegramLongPollingBot
     private final JoinRequestListener joinRequestListener; // внедрение обработчика
     private final JoinRequestService joinRequestService; // внедрение сервиса обработчика
 
-    private final SubsCheckService subsCheckService; // сервис проверки на отписку
 
 
     @PostConstruct
@@ -107,12 +107,8 @@ public class ContestJoinBot extends TelegramLongPollingBot
         List<ChannelConfig> missingTg = new ArrayList<>();
 
         // Проверка VK групп
-        Map<String, Boolean> memberships = vkService.areMembers(
-                vkProps.getGroups().stream().map(GroupConfig::getId).toList(),
-                vkId
-        );
         for (GroupConfig group : vkProps.getGroups()) {
-            if (!memberships.getOrDefault(group.getId(), false)) {
+            if (!vkService.areMembers(group, userId.toString())) {
                 missingVk.add(group);
             }
         }
@@ -133,6 +129,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
         // Формируем сообщение о недостающих подписках
         StringBuilder sb = new StringBuilder("\uD83D\uDCCC ВАЖНО — подписка на все сообщества и каналы\n\n");
 
+
         if (!missingVk.isEmpty()) {
             sb.append("✔\uFE0F Cообщество в <b>VK</b>:\n");
             for (GroupConfig g : missingVk) {
@@ -146,8 +143,8 @@ public class ContestJoinBot extends TelegramLongPollingBot
         if (!missingTg.isEmpty()) {
             sb.append("✔\uFE0F <b>Telegram</b>-канал:\n");
             for (ChannelConfig c : missingTg) {
-                String cleanId = c.getName_id().replace("@", "");
-                sb.append("<i><a href=\"https://t.me/+9VBfvYszQRoxNDMy").append("\">")
+
+                sb.append("<i><a href=\"https://t.me/+dDrhWEXJxS9jMDMy").append("\">")
                         .append(c.getName()).append("</a></i>\n");
             }
             sb.append("\n");
@@ -175,7 +172,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
         try {
             execute(msg);
         } catch (TelegramApiException e) {
-            e.printStackTrace();
+            log.info(e.getMessage());
         }
     }
 
@@ -216,5 +213,6 @@ public class ContestJoinBot extends TelegramLongPollingBot
         if (input.matches("\\d+")) return input; // если ввели число
         return input.replaceAll(".*vk.com/", "").replaceAll("[^a-zA-Z0-9_]", "");
     }
+
 
 }

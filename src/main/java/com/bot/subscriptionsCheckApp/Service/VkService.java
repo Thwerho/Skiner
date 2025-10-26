@@ -20,12 +20,10 @@ public class VkService {
     /**
      * Проверка подписки пользователя на группу
      */
-    public Map<String, Boolean> areMembers(List<String> groups, String userId) {
+    public Boolean areMembers(GroupConfig g, String userId) {
         String numericUserId = resolveId(userId, "user");
-        Map<String, Boolean> result = new HashMap<>();
 
-        for (String g : groups) {
-            String numericGroupId = resolveId(g, "group");
+            String numericGroupId = resolveId(g.getId().toString(), "group");
 
             Map<?, ?> res = http.get()
                     .uri(uriBuilder -> uriBuilder.path("/groups.isMember")
@@ -39,22 +37,24 @@ public class VkService {
                     .block();
 
 
-            System.out.println("VK API response for isMember(group=" + g + ", user=" + userId + "): " + res);
-
-
             boolean isMember = false;
             if (res != null && res.get("response") != null) {
                 Object response = res.get("response");
-                if (response instanceof Integer i) {
+                if (response instanceof Integer i)
+                {
                     isMember = (i == 1);
-                } else if (response instanceof Map<?, ?> m) {
+                }
+                else if (response instanceof Map<?, ?> m)
+                {
                     isMember = "1".equals(String.valueOf(m.get("member")));
                 }
+                else if (response instanceof Map<?, ?> m)
+                {
+                    isMember = "1".equals(String.valueOf(m.get("admin")));
+                }
             }
-            result.put(g, isMember);
-        }
 
-        return result;
+        return !isMember;
     }
 
     /**
