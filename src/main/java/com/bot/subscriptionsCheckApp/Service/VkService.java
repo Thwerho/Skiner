@@ -23,36 +23,32 @@ public class VkService {
     public Boolean areMembers(GroupConfig g, String userId) {
         String numericUserId = resolveId(userId, "user");
 
-            String numericGroupId = resolveId(g.getId().toString(), "group");
+        String numericGroupId = resolveId(g.getId(), "group");
 
-            Map<?, ?> res = http.get()
-                    .uri(uriBuilder -> uriBuilder.path("/groups.isMember")
-                            .queryParam("group_id", numericGroupId)
-                            .queryParam("user_id", numericUserId)
-                            .queryParam("access_token", properties.getServiceToken())
-                            .queryParam("v", properties.getApiVersion())
-                            .build())
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
+        Map<?, ?> res = http.get()
+                .uri(uriBuilder -> uriBuilder.path("/groups.isMember")
+                        .queryParam("group_id", numericGroupId)
+                        .queryParam("user_id", numericUserId)
+                        .queryParam("access_token", properties.getServiceToken())
+                        .queryParam("v", properties.getApiVersion())
+                        .build())
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
 
 
-            boolean isMember = false;
-            if (res != null && res.get("response") != null) {
-                Object response = res.get("response");
-                if (response instanceof Integer i)
-                {
-                    isMember = (i == 1);
-                }
-                else if (response instanceof Map<?, ?> m)
-                {
-                    isMember = "1".equals(String.valueOf(m.get("member")));
-                }
-                else if (response instanceof Map<?, ?> m)
-                {
-                    isMember = "1".equals(String.valueOf(m.get("admin")));
-                }
+        boolean isMember = false;
+        if (res != null && res.get("response") != null) {
+            Object response = res.get("response");
+            if (response instanceof Integer i)
+            {
+                isMember = (i == 1);
             }
+            else if (response instanceof Map<?, ?> m)
+            {
+                isMember = "1".equals(String.valueOf(m.get("member")));
+            }
+        }
 
         return isMember;
     }

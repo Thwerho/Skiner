@@ -33,7 +33,7 @@ public class JoinRequestService
         var chatId = req.getChat().getId();
         var user = req.getUser();
 
-        System.out.printf("New join request from @%s — will be approved in 30 seconds...%n",
+        System.out.printf("New join request from @%s - will be approved in 30 seconds...%n",
                 user.getUserName());
         // Планируем задачу через 30 секунд
         scheduler.schedule(() -> {

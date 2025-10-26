@@ -108,7 +108,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
         // Проверка VK групп
         for (GroupConfig group : vkProps.getGroups()) {
-            if (!vkService.areMembers(group, userId.toString())) {
+            if (!vkService.areMembers(group, vkId)) {
                 missingVk.add(group);
             }
         }

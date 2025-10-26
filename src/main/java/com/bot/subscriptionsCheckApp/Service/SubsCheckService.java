@@ -28,7 +28,7 @@ public class SubsCheckService
     private final VkProperties vkProps;
 
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 15000)
     public void handleGroupLeave()
     {
         log.info("Subscriptions check...");
@@ -68,7 +68,7 @@ public class SubsCheckService
                 {
                     contestService.deleteParticipant(user); // удаление из бд
 
-                    log.info("Tg API: user {} deleted, not subscriber to telegram: {} .\n",
+                    log.info("Tg API: user {} deleted, not subscribed to telegram: {}",
                             user.getTelegramId(), channel.getName_id());
                 }
                 else
@@ -91,7 +91,7 @@ public class SubsCheckService
             if (!vkService.areMembers(group, user.getVk_id()))
             {
                 contestService.deleteParticipant(user);
-                log.info("VK API: user {} deleted, not subscribed to vk: {}.\n", user.getVk_id(), group.getName());
+                log.info("VK API: user {} deleted, not subscribed to vk: {}.", user.getVk_id(), group.getName());
             }
             else
             {
