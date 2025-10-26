@@ -31,7 +31,7 @@ public class SubsCheckService
     @Scheduled(fixedRate = 60000)
     public void handleGroupLeave()
     {
-        log.info("Проверка подписок в бд...");
+        log.info("Subscriptions check...");
 
         try
         {
@@ -39,7 +39,7 @@ public class SubsCheckService
 
             for(ContestUser user : users)
             {
-                log.info("Проверка пользователя: {}", user.getTelegramId());
+                log.info("User check: {}", user.getTelegramId());
 
 
                 checkTgSubscriptions(user);
@@ -49,7 +49,7 @@ public class SubsCheckService
             }
 
         } catch (Exception e) {
-            log.error("Ошибка при выполнении проверки подписок: \n", e);
+            log.error("Error while checking subscriptions: \n", e);
         }
 
         System.out.println("_____________________________" +
@@ -68,15 +68,15 @@ public class SubsCheckService
                 {
                     contestService.deleteParticipant(user); // удаление из бд
 
-                    log.info("Tg API: пользователь {} удален, отписан от telegram: {} .\n",
+                    log.info("Tg API: user {} deleted, not subscriber to telegram: {} .\n",
                             user.getTelegramId(), channel.getName_id());
                 }
             }
-            log.info("Tg API: проверка пройдена успешно.");
+            log.info("Tg API: check is completed.");
         }
         catch (Exception e)
         {
-            log.warn("Ошибка при проверке tg для пользователя {}: {}", user.getTelegramId(), e.getMessage());
+            log.warn("Error while checking subscriptions of user {}: {}", user.getTelegramId(), e.getMessage());
         }
     }
 
@@ -88,11 +88,11 @@ public class SubsCheckService
             if (vkService.areMembers(group, user.getVk_id()))
             {
                 contestService.deleteParticipant(user);
-                log.info("VK API: Пользователь {} удален, отписан от vk: {}.\n", user.getVk_id(), group.getName());
+                log.info("VK API: user {} deleted, not subscribed to vk: {}.\n", user.getVk_id(), group.getName());
             }
         }
 
-        log.info("VK API: проверка пройдена успешно.");
+        log.info("VK API: check is completed.");
     }
 
 }
