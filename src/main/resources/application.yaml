@@ -13,7 +13,7 @@ spring:
 
 bot:
   username: elektrostal_test_bot
-  token: 8252803793:AAGaPyncrcUAoQirkk4bVJXsFO0-fWZQ_3o
+  token: 8368777417:AAFwwqL_YB-MiP6wdlnbbBbWoseiv1T-BxA
   telegram_channels:
     - id: "-1002941824173"
       name_id: "fhelhockey"
