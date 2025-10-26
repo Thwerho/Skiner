@@ -71,8 +71,11 @@ public class SubsCheckService
                     log.info("Tg API: user {} deleted, not subscriber to telegram: {} .\n",
                             user.getTelegramId(), channel.getName_id());
                 }
+                else
+                {
+                    log.info("Tg API: check is completed.");
+                }
             }
-            log.info("Tg API: check is completed.");
         }
         catch (Exception e)
         {
@@ -90,9 +93,12 @@ public class SubsCheckService
                 contestService.deleteParticipant(user);
                 log.info("VK API: user {} deleted, not subscribed to vk: {}.\n", user.getVk_id(), group.getName());
             }
+            else
+            {
+                log.info("VK API: check is completed.");
+            }
         }
 
-        log.info("VK API: check is completed.");
     }
 
 }
