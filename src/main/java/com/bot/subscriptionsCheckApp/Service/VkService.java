@@ -54,7 +54,7 @@ public class VkService {
                 }
             }
 
-        return isMember;
+        return !isMember;
     }
 
     /**

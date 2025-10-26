@@ -88,7 +88,7 @@ public class SubsCheckService
         for (GroupConfig group : vkProps.getGroups()) // проходимся по всем группам из application.yaml
         {
 
-            if (!vkService.areMembers(group, user.getVk_id()))
+            if (vkService.areMembers(group, user.getVk_id()))
             {
                 contestService.deleteParticipant(user);
                 log.info("VK API: user {} deleted, not subscribed to vk: {}.\n", user.getVk_id(), group.getName());
