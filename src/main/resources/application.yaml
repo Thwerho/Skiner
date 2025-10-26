@@ -16,8 +16,8 @@ bot:
   token: 8252803793:AAGaPyncrcUAoQirkk4bVJXsFO0-fWZQ_3o
   telegram_channels:
     - id: "-1002941824173"
-      name_id: "fhelhockey"
-      name: "Федерация хоккея | Электросталь"
+      name_id: "1"
+      name: "1"
 
 vk:
   serviceToken: ea00d32eea00d32eea00d32e29e939cd8eeea00ea00d32e82acb916a01c2d062ab49af0

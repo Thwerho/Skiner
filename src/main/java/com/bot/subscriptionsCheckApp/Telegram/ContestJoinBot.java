@@ -144,7 +144,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
             sb.append("✔\uFE0F <b>Telegram</b>-канал:\n");
             for (ChannelConfig c : missingTg) {
 
-                sb.append("<i><a href=\"https://t.me/+9VBfvYszQRoxNDMy").append("\">")
+                sb.append("<i><a href=\"https://t.me/+dDrhWEXJxS9jMDMy").append("\">")
                         .append(c.getName()).append("</a></i>\n");
             }
             sb.append("\n");
