@@ -48,6 +48,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
     {
 
         joinRequestListener.onUpdate(update); //включаем обработку заявок
+        StringBuilder sb = new StringBuilder();
 
         // обработка сообщений в бота
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -59,8 +60,8 @@ public class ContestJoinBot extends TelegramLongPollingBot
             List<String> greetings = Arrays.asList("/start", "привет", "ку",
                     "как дела?", "здорово", "дарова", "здарова", "здравствуйте");
 
-            if (greetings.stream().anyMatch(message -> text.matches(".*" + message + ".*"))
-                    || text.matches("/check_subscriptions")) {
+            if (greetings.stream().anyMatch(message -> text.matches(".*" + message + ".*")))
+            {
                 reply(chatId, "Привет! Отправь ссылку на свою страницу в ВК.\n" +
                         "<b>Пример: vk.com/ВАШ_ЮЗЕРНЕЙМ\n" +
                         "Пример: https://vk.com/ВАШ_ЮЗЕРНЕЙМ</b>\n");
@@ -70,6 +71,30 @@ public class ContestJoinBot extends TelegramLongPollingBot
             } else if (text.matches("\\d+")) { // поправил на "+", иначе срабатывало только на одну цифру
                 vkId = text;
                 checkSubscriptions(chatId, userId, vkId);
+            }
+            else if (text.matches("/join_channel"))
+            {
+                sb.append( "Ссылка на соцсети Федерации хоккея г.о. Электросталь ->\n" +
+                        "✔\uFE0F<b>Телеграм-каналы:</b>\n");
+                for(ChannelConfig channel : props.getTelegramChannels())
+                {
+                    sb.append("<i><a href=\"https://t.me/+9VBfvYszQRoxNDMy").append("\">")
+                            .append(channel.getName()).append("</a></i>\n");
+                }
+
+                sb.append("✔\uFE0F<b>Сообщества в ВК:</b>\n");
+                for(GroupConfig group : vkProps.getGroups())
+                {
+                    sb.append("<i><a href=\"https://vk.com/")
+                            .append(group.getId()).append("\">")
+                            .append(group.getName()).append("</a></i>\n");
+                }
+
+                reply(chatId, sb.toString());
+            }
+            else if (text.matches("/check_subscriptions"))
+            {
+                // логика обработки /check_subscriptions
             }
         }
 
