@@ -62,9 +62,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
             if (greetings.stream().anyMatch(message -> text.matches(".*" + message + ".*")))
             {
-                reply(chatId, "Привет! Отправь ссылку на свою страницу в ВК.\n" +
-                        "<b>Пример: vk.com/ВАШ_ЮЗЕРНЕЙМ\n" +
-                        "Пример: https://vk.com/ВАШ_ЮЗЕРНЕЙМ</b>\n");
+                reply(chatId, "Привет! Для взаимодействия с ботом используйте кнопки в меню.\n");
             } else if (text.matches(".*vk.com/.*")) {
                 vkId = parseVkId(text);
                 checkSubscriptions(chatId, userId, vkId);
@@ -72,29 +70,34 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 vkId = text;
                 checkSubscriptions(chatId, userId, vkId);
             }
-            else if (text.matches("/join_channel"))
+            else if (text.matches("/media"))
             {
-                sb.append( "Ссылка на соцсети Федерации хоккея г.о. Электросталь ->\n" +
-                        "✔\uFE0F<b>Телеграм-каналы:</b>\n");
+                sb.append( "\uD83D\uDCCC Социальные сети Федерации хоккея г.о. Электросталь\n\n" +
+                        "✔\uFE0F<b>Telegram</b>-канал: ");
                 for(ChannelConfig channel : props.getTelegramChannels())
                 {
-                    sb.append("<i><a href=\"https://t.me/+9VBfvYszQRoxNDMy").append("\">")
-                            .append(channel.getName()).append("</a></i>\n");
+                    sb.append("<b><i><a href=\"https://t.me/+9VBfvYszQRoxNDMy").append("\">")
+                            .append(channel.getName()).append("</a></i></b>\n\n");
                 }
 
-                sb.append("✔\uFE0F<b>Сообщества в ВК:</b>\n");
+                sb.append("✔\uFE0FСообщество в <b>VK</b>: ");
                 for(GroupConfig group : vkProps.getGroups())
                 {
-                    sb.append("<i><a href=\"https://vk.com/")
+                    sb.append("<b><i><a href=\"https://vk.com/")
                             .append(group.getId()).append("\">")
-                            .append(group.getName()).append("</a></i>\n");
+                            .append(group.getName()).append("</a></i></b>\n");
                 }
 
                 reply(chatId, sb.toString());
             }
             else if (text.matches("/check_subscriptions"))
             {
-                // логика обработки /check_subscriptions
+                reply(chatId, "Отправь ссылку на свою страницу в ВК.\n" +
+                "<b>Пример: vk.com/ВАШ_ЮЗЕРНЕЙМ\n" +
+                "Пример: https://vk.com/ВАШ_ЮЗЕРНЕЙМ</b>\n");
+            } else if (text.matches(".*vk.com/.*")) {
+                vkId = parseVkId(text);
+                checkSubscriptions(chatId, userId, vkId);
             }
         }
 
