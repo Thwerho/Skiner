@@ -4,6 +4,7 @@ import com.bot.subscriptionsCheckApp.Config.BotProperties;
 import com.bot.subscriptionsCheckApp.Config.VkProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
+import com.bot.subscriptionsCheckApp.Repos.ContestUserRepository;
 import com.bot.subscriptionsCheckApp.Service.*;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
@@ -63,13 +64,9 @@ public class ContestJoinBot extends TelegramLongPollingBot
             if (greetings.stream().anyMatch(message -> text.matches(".*" + message + ".*")))
             {
                 reply(chatId, "Привет! Для взаимодействия с ботом используйте кнопки в меню.\n");
-            } else if (text.matches(".*vk.com/.*")) {
-                vkId = parseVkId(text);
-                checkSubscriptions(chatId, userId, vkId);
-            } else if (text.matches("\\d+")) { // поправил на "+", иначе срабатывало только на одну цифру
-                vkId = text;
-                checkSubscriptions(chatId, userId, vkId);
             }
+
+
             else if (text.matches("/media"))
             {
                 sb.append( "\uD83D\uDCCC Социальные сети Федерации хоккея г.о. Электросталь\n\n" +
@@ -90,14 +87,32 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
                 reply(chatId, sb.toString());
             }
+
             else if (text.matches("/check_subscriptions"))
             {
-                reply(chatId, "Отправь ссылку на свою страницу в ВК.\n" +
-                "<b>Пример: vk.com/ВАШ_ЮЗЕРНЕЙМ\n" +
-                "Пример: https://vk.com/ВАШ_ЮЗЕРНЕЙМ</b>\n");
-            } else if (text.matches(".*vk.com/.*")) {
+                if(contestService.findByTgId(chatId))
+                {
+                    sendButton(chatId, "Чтобы проверить подписки, нажмите кнопку ниже.\n",
+                            "Проверить подписки", "check_subscriptions");
+                }
+                else
+                {
+                    sendButton(chatId, "Чтобы проверить подписки, привяжите свою страницу в ВК.<b>Для этого нажмите кнопку\n</b>\n",
+                            "Проверить подписки", "check_subscriptions");
+                }
+            }
+
+            else if (text.matches("/add_vk"))
+            {
+                reply(chatId, "Для того, чтобы привязать страницу в VK, оставьте ссылку на нее в сообщении ниже по примеру:\n\n" +
+                        "Пример: https://vk.com/ВАШ_ЮЗЕРНЕЙМ_VK\n" +
+                        "Или\n" +
+                        "Пример: vk.com/ВАШ_ЮЗЕРНЕЙМ_VK\n");
+            }
+
+            else if (text.matches(".*vk.com/.*")) {
                 vkId = parseVkId(text);
-                checkSubscriptions(chatId, userId, vkId);
+                sendButton(chatId, "Чтобы привязать свой VK нажмите на кнопку ниже:", "Привязать VK", "addUser_" + vkId);
             }
         }
 
@@ -122,6 +137,19 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 String vkId = data.substring(5); // теперь строка, а не Long.parseLong
                 boolean ok = contestService.addParticipant(userId, username, vkId);
                 reply(chatId, ok ? "Ты участвуешь в конкурсе 🎉" : "Ты уже участвуешь!");
+            }
+
+            if (data.startsWith("addUser_"))
+            {
+                String vkId = data.substring(8);
+                System.out.println(vkId);
+                boolean ok = contestService.addUser(userId, username, vkId);
+                reply(chatId, ok ? "Страница в VK успешно привязана 🎉" : "Ошибка, обратитесь к @mollen44 в Telegram, чтобы привязать страницу.");
+            }
+
+            if (data.startsWith("check_subscriptions"))
+            {
+
             }
         }
     }
@@ -178,10 +206,11 @@ public class ContestJoinBot extends TelegramLongPollingBot
             sb.append("\n");
         }
 
-        sb.append("Чтобы проверить свои подписки, отправьте ссылку на свою страницу в ВК ещё раз \uD83D\uDCE9");
+        sb.append("Чтобы проверить свои подписки, нажмите кнопку в меню \uD83D\uDCE9");
 
         reply(chatId, sb.toString());
     }
+
 
     private void sendButton(Long chatId, String text, String btnText, String callback) {
         InlineKeyboardButton btn = InlineKeyboardButton.builder()

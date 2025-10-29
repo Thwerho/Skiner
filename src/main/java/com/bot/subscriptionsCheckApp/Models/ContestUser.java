@@ -28,6 +28,9 @@ public class ContestUser
     @Column(name = "tg_username", nullable = false, unique = false)
     private String telegramUsername;
 
+    @Column(name = "is_participates", nullable = false, unique = false)
+    private boolean isParticipates;
+
     @Column(name = "time_joined", nullable = false)
     private LocalDateTime time_joined;
 

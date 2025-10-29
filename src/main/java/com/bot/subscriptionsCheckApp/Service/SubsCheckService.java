@@ -39,13 +39,14 @@ public class SubsCheckService
 
             for(ContestUser user : users)
             {
-                log.info("User check: {}", user.getTelegramId());
+                if(user.isParticipates()) {
 
+                    log.info("User check: {}", user.getTelegramId());
 
-                checkTgSubscriptions(user);
+                    checkTgSubscriptions(user);
 
-                checkVkSubscriptions(user);
-
+                    checkVkSubscriptions(user);
+                }
             }
 
         } catch (Exception e) {
@@ -62,17 +63,14 @@ public class SubsCheckService
     {
         try
         {
-            for (ChannelConfig channel : props.getTelegramChannels())
-            {
+            for (ChannelConfig channel : props.getTelegramChannels()) {
                 if (!tgService.isMember(user.getTelegramId(), channel.getId())) // если пользователь не состоит в канале
                 {
                     contestService.deleteParticipant(user); // удаление из бд
 
                     log.info("Tg API: user {} deleted, not subscribed to telegram: {}",
                             user.getTelegramId(), channel.getName_id());
-                }
-                else
-                {
+                } else {
                     log.info("Tg API: check is completed.");
                 }
             }
@@ -85,20 +83,16 @@ public class SubsCheckService
 
     private void checkVkSubscriptions(ContestUser user)
     {
-        for (GroupConfig group : vkProps.getGroups()) // проходимся по всем группам из application.yaml
-        {
-
-            if (!vkService.areMembers(group, user.getVk_id()))
+            for (GroupConfig group : vkProps.getGroups()) // проходимся по всем группам из application.yaml
             {
-                contestService.deleteParticipant(user);
-                log.info("VK API: user {} deleted, not subscribed to vk: {}.", user.getVk_id(), group.getName());
-            }
-            else
-            {
-                log.info("VK API: check is completed.");
-            }
-        }
 
+                if (!vkService.areMembers(group, user.getVk_id())) {
+                    contestService.deleteParticipant(user);
+                    log.info("VK API: user {} deleted, not subscribed to vk: {}.", user.getVk_id(), group.getName());
+                } else {
+                    log.info("VK API: check is completed.");
+                }
+            }
     }
 
 }
