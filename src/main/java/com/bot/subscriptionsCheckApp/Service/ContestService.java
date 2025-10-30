@@ -46,14 +46,24 @@ public class ContestService {
     public boolean addUser(Long tgId, String username, String vkId)
     {
         try {
-            ContestUser user = ContestUser.builder()
-                    .telegramId(tgId)
-                    .telegramUsername(username)
-                    .vk_id(vkId)
-                    .isParticipates(false)
-                    .time_joined(LocalDateTime.now())
-                    .build();
-            repo.save(user);
+            if (repo.findByTelegramId(tgId).isPresent()) // если пользователь уже есть - добавляем новый вк или меняем старый
+            {
+                ContestUser user = repo.findByTelegramId(tgId).get();
+                user.setVk_id(vkId);
+                repo.save(user);
+            }
+            else // если пользователя еще нет (никогда не добавлял вк), то сохраняем его как нового пользователя
+            {
+                ContestUser user = ContestUser.builder()
+                        .telegramId(tgId)
+                        .telegramUsername(username)
+                        .vk_id(vkId)
+                        .time_joined(LocalDateTime.now()) // обязательно для нового пользователя
+                        .isParticipates(false)
+                        .build();
+                repo.save(user);
+            }
+
             return true;
         }
         catch (DataIntegrityViolationException e)

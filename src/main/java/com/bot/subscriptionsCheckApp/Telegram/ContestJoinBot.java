@@ -4,7 +4,6 @@ import com.bot.subscriptionsCheckApp.Config.BotProperties;
 import com.bot.subscriptionsCheckApp.Config.VkProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
-import com.bot.subscriptionsCheckApp.Repos.ContestUserRepository;
 import com.bot.subscriptionsCheckApp.Service.*;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
@@ -58,10 +57,8 @@ public class ContestJoinBot extends TelegramLongPollingBot
             String text = update.getMessage().getText();
             String vkId;
 
-            List<String> greetings = Arrays.asList("/start", "привет", "ку",
-                    "как дела?", "здорово", "дарова", "здарова", "здравствуйте");
 
-            if (greetings.stream().anyMatch(message -> text.matches(".*" + message + ".*")))
+            if (text.matches("/start") || text.isEmpty() || text.matches(".*"))
             {
                 reply(chatId, "Привет! Для взаимодействия с ботом используйте кнопки в меню.\n");
             }
