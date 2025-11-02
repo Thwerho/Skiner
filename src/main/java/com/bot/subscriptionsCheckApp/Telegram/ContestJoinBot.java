@@ -18,7 +18,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -55,10 +54,12 @@ public class ContestJoinBot extends TelegramLongPollingBot
             Long chatId = update.getMessage().getChatId();
             Long userId = update.getMessage().getFrom().getId();
             String text = update.getMessage().getText();
-            String vkId;
+            String vkId = "";
 
 
-            if (text.matches("/start") || text.isEmpty() || text.matches(".*"))
+            if ((text.matches("/start") || text.isEmpty() || text.matches(".*")) &&
+                    !(text.matches("/media") || text.matches("/check_subscriptions")
+                    ||text.matches("/add_vk") || text.matches(".*vk.com/.*") || text.matches("@.*")))
             {
                 reply(chatId, "Привет! Для взаимодействия с ботом используйте кнопки в меню.\n");
             }
@@ -85,31 +86,32 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 reply(chatId, sb.toString());
             }
 
-            else if (text.matches("/check_subscriptions"))
-            {
-                if(contestService.findByTgId(chatId))
-                {
-                    sendButton(chatId, "Чтобы проверить подписки, нажмите кнопку ниже.\n",
-                            "Проверить подписки", "check_subscriptions");
-                }
-                else
-                {
-                    sendButton(chatId, "Чтобы проверить подписки, привяжите свою страницу в ВК.<b>Для этого нажмите кнопку\n</b>\n",
-                            "Проверить подписки", "check_subscriptions");
-                }
-            }
-
             else if (text.matches("/add_vk"))
             {
-                reply(chatId, "Для того, чтобы привязать страницу в VK, оставьте ссылку на нее в сообщении ниже по примеру:\n\n" +
-                        "Пример: https://vk.com/ВАШ_ЮЗЕРНЕЙМ_VK\n" +
-                        "Или\n" +
-                        "Пример: vk.com/ВАШ_ЮЗЕРНЕЙМ_VK\n");
+                reply(chatId, "Для привязки VK, оставьте ссылку в сообщении ниже по одному из примеров:\n\n" +
+                        "1\uFE0F⃣: https://vk.com/юзернейм\n\n" +
+                        "2\uFE0F⃣: vk.com/юзернейм\n\n" +
+                        "3\uFE0F⃣:@юзернейм");
             }
 
-            else if (text.matches(".*vk.com/.*")) {
+            else if (text.matches(".*vk.com/.*") || text.matches("@.*")) {
                 vkId = parseVkId(text);
                 sendButton(chatId, "Чтобы привязать свой VK нажмите на кнопку ниже:", "Привязать VK", "addUser_" + vkId);
+            }
+
+            if (text.matches("/check_subscriptions"))
+            {
+                if(contestService.findByTgId(userId)) {
+                    if (contestService.isVkFilled(userId)) {
+                        sendButton(chatId, "Чтобы проверить подписки, нажмите кнопку ниже.",
+                                "Проверить подписки", "_checkSubscriptions");
+                    }
+                    else
+                    {
+                        reply(chatId, "Вы еще не привязали VK. Для привязки нажмите кнопку Привязать VK в меню.");
+                    }
+                }
+
             }
         }
 
@@ -138,16 +140,20 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
             if (data.startsWith("addUser_"))
             {
-                String vkId = data.substring(8);
-                System.out.println(vkId);
-                boolean ok = contestService.addUser(userId, username, vkId);
-                reply(chatId, ok ? "Страница в VK успешно привязана 🎉" : "Ошибка, обратитесь к @mollen44 в Telegram, чтобы привязать страницу.");
+                if(checkSubscriptions(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id()))
+                {
+                    String vkId = data.substring(8);
+                    System.out.println(vkId);
+                    boolean ok = contestService.addUser(userId, username, vkId);
+                    reply(chatId, ok ? "Страница в VK успешно привязана \uD83E\uDD73" : "Ошибка, обратитесь к @mollen44 в Telegram, чтобы привязать страницу.");
+                }
             }
 
-            if (data.startsWith("check_subscriptions"))
+            if (data.startsWith("_checkSubscriptions"))
             {
-
+                checkSubscriptions(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
             }
+
         }
     }
 
@@ -175,7 +181,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
         // Все подписки есть
         if (missingVk.isEmpty() && missingTg.isEmpty()) {
-            sendButton(chatId, "Все подписки есть ✅", "Участвовать в конкурсе", "join_" + vkId);
+            sendButton(chatId, "✅ все подписки есть", "Участвовать в конкурсе", "join_" + vkId);
             return;
         }
 
@@ -203,7 +209,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
             sb.append("\n");
         }
 
-        sb.append("Чтобы проверить свои подписки, нажмите кнопку в меню \uD83D\uDCE9");
+        sb.append("Для проверки подписок, нажмите кнопку в меню \uD83D\uDCE9");
 
         reply(chatId, sb.toString());
     }
@@ -265,7 +271,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
      */
     private String parseVkId(String input) {
         if (input.matches("\\d+")) return input; // если ввели число
-        return input.replaceAll(".*vk.com/", "").replaceAll("[^a-zA-Z0-9_]", "");
+        return input.replaceAll(".*vk.com/", "").replaceAll("[^a-zA-Z0-9_]", "").replaceAll("@", "");
     }
 
 

@@ -12,8 +12,9 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ContestService {
-    private final ContestUserRepository repo;
+public class ContestService
+{
+    public final ContestUserRepository repo;
 
     public boolean findByTgId(Long tgId)
     {
@@ -73,6 +74,8 @@ public class ContestService {
         }
     }
 
+
+
     public void deleteParticipantById(Long tgId, String username, String vkId) {
             ContestUser user = ContestUser.builder()
                     .telegramId(tgId)
@@ -89,5 +92,17 @@ public class ContestService {
         user.setParticipates(false);
         repo.save(user);
     }
+
+    public boolean isVkFilled(Long tgId)
+    {
+        ContestUser user = repo.findByTelegramId(tgId).get();
+        if (user.getVk_id().isEmpty())
+        {
+            return false;
+        }
+        return true;
+    }
+
+
 
 }
