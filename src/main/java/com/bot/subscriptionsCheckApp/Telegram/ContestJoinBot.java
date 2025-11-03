@@ -140,12 +140,17 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
             if (data.startsWith("addUser_"))
             {
-                if(checkSubscriptions(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id()))
+                String vkId = data.substring(8);
+                System.out.println(vkId);
+
+                if(checkSubscriptionsBool(userId, contestService.repo.findByTelegramId(userId).get().getVk_id()))
                 {
-                    String vkId = data.substring(8);
-                    System.out.println(vkId);
                     boolean ok = contestService.addUser(userId, username, vkId);
                     reply(chatId, ok ? "Страница в VK успешно привязана \uD83E\uDD73" : "Ошибка, обратитесь к @mollen44 в Telegram, чтобы привязать страницу.");
+                }
+                else
+                {
+                    checkSubscriptions(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
                 }
             }
 
@@ -153,6 +158,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
             {
                 checkSubscriptions(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
             }
+
 
         }
     }
@@ -213,6 +219,81 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
         reply(chatId, sb.toString());
     }
+
+    private void checkSubscriptionsOutput(Long chatId, Long tgId, String vkId)
+    {
+
+        if (missingTgChannels(tgId).isEmpty() && missingVkGroups(vkId).isEmpty())
+        {
+            sendButton(chatId, "✅ все подписки есть", "Участвовать в конкурсе", "join_" + vkId);
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder("\uD83D\uDCCC ВАЖНО — подписка на все сообщества и каналы\n\n");
+
+        if (!missingVkGroups(vkId).isEmpty())
+        {
+            sb.append("✔\uFE0F Cообщество в <b>VK</b>:\n");
+            for (GroupConfig g : missingVkGroups(vkId)) {
+                sb.append("<i><a href=\"https://vk.com/")
+                        .append(g.getId()).append("\">")
+                        .append(g.getName()).append("</a></i>\n");
+            }
+            sb.append("\n");
+        }
+
+        if (!missingTgChannels(tgId).isEmpty())
+        {
+            sb.append("✔\uFE0F <b>Telegram</b>-канал:\n");
+            for (ChannelConfig c : missingTgChannels(tgId)) {
+                sb.append("<i><a href=\"https://t.me/+9VBfvYszQRoxNDMy").append("\">")
+                        .append(c.getName()).append("</a></i>\n");
+            }
+            sb.append("\n");
+        }
+
+        sb.append("Для проверки подписок, нажмите кнопку в меню \uD83D\uDCE9");
+
+        reply(chatId, sb.toString());
+    }
+
+    private List<ChannelConfig> missingTgChannels(Long userId)
+    {
+        List<ChannelConfig> missingChannels = new ArrayList<>();
+         for (ChannelConfig channel : props.getTelegramChannels())
+         {
+             if(!tgService.isMember(userId, channel.getId()))
+             {
+                 missingChannels.add(channel);
+             }
+         }
+
+         return missingChannels;
+    }
+
+    private List<GroupConfig> missingVkGroups(String vkId)
+    {
+        List<GroupConfig> missingGroups = new ArrayList<>();
+        for(GroupConfig group : vkProps.getGroups())
+        {
+            if(!vkService.areMembers(group, vkId))
+            {
+                missingGroups.add(group);
+            }
+        }
+
+        return missingGroups;
+    }
+
+    private boolean checkSubscriptionsBool(Long tgId, String vkId)
+    {
+        if (missingTgChannels(tgId).isEmpty() && missingVkGroups(vkId).isEmpty())
+        {
+            return true;
+        }
+        return false;
+    }
+
 
 
     private void sendButton(Long chatId, String text, String btnText, String callback) {
