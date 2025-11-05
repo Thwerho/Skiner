@@ -4,6 +4,7 @@ import com.bot.subscriptionsCheckApp.Config.BotProperties;
 import com.bot.subscriptionsCheckApp.Config.VkProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
+import com.bot.subscriptionsCheckApp.Models.ContestUser;
 import com.bot.subscriptionsCheckApp.Service.*;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
@@ -17,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +93,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 reply(chatId, "Для привязки VK, оставьте ссылку в сообщении ниже по одному из примеров:\n\n" +
                         "1\uFE0F⃣: https://vk.com/юзернейм\n\n" +
                         "2\uFE0F⃣: vk.com/юзернейм\n\n" +
-                        "3\uFE0F⃣:@юзернейм");
+                        "3\uFE0F⃣: @username");
             }
 
             else if (text.matches(".*vk.com/.*") || text.matches("@.*")) {
@@ -133,8 +135,16 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
 
             if (data.startsWith("join_")) {
-                String vkId = data.substring(5); // теперь строка, а не Long.parseLong
-                boolean ok = contestService.addParticipant(userId, username, vkId);
+                String vkId = data.substring(5);
+                boolean ok;
+                if (contestService.repo.findByTelegramId(userId).isPresent())
+                {
+                    ok = contestService.addParticipant(userId, username, vkId);
+                }
+                else
+                {
+                    ok = contestService.addParticipant(userId, username, vkId);
+                }
                 reply(chatId, ok ? "Ты участвуешь в конкурсе 🎉" : "Ты уже участвуешь!");
             }
 
@@ -150,13 +160,13 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 }
                 else
                 {
-                    checkSubscriptions(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
+                    checkSubscriptionsOutputCheck(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
                 }
             }
 
             if (data.startsWith("_checkSubscriptions"))
             {
-                checkSubscriptions(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
+                checkSubscriptionsOutputCheck(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
             }
 
 
@@ -220,7 +230,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
         reply(chatId, sb.toString());
     }
 
-    private void checkSubscriptionsOutput(Long chatId, Long tgId, String vkId)
+    private void checkSubscriptionsOutputCheck(Long chatId, Long tgId, String vkId)
     {
 
         if (missingTgChannels(tgId).isEmpty() && missingVkGroups(vkId).isEmpty())
@@ -254,7 +264,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
         sb.append("Для проверки подписок, нажмите кнопку в меню \uD83D\uDCE9");
 
-        reply(chatId, sb.toString());
+        sendButton(chatId, sb.toString(), "Проверить подписки", "_checkSubscriptions");
     }
 
     private List<ChannelConfig> missingTgChannels(Long userId)
@@ -308,6 +318,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 .chatId(chatId.toString())
                 .text(text)
                 .replyMarkup(markup)
+                .parseMode("HTML")
                 .build();
 
         try {

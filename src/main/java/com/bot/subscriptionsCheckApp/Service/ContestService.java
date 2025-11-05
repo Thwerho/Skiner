@@ -30,8 +30,20 @@ public class ContestService
 
 
     public boolean addParticipant(Long tgId, String username, String vkId) {
-        if (repo.findByTelegramId(tgId).isPresent()) {
-            return false; // уже участвует
+        if (repo.findByTelegramId(tgId).isPresent())
+        {
+            if(repo.findByTelegramId(tgId).get().isParticipates())
+            {
+                return false; // уже участвует
+            }
+            else
+            {
+
+                ContestUser user = repo.findByTelegramId(tgId).get();
+                user.setParticipates(true);
+                repo.save(user);
+                return true;
+            }
         }
         ContestUser user = ContestUser.builder()
                 .telegramId(tgId)
