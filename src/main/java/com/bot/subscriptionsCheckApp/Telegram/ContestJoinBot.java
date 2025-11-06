@@ -91,13 +91,13 @@ public class ContestJoinBot extends TelegramLongPollingBot
             else if (text.matches("/add_vk"))
             {
                 reply(chatId, "Для привязки VK, оставьте ссылку в сообщении ниже по одному из примеров:\n\n" +
-                        "1\uFE0F⃣: https://vk.com/юзернейм\n\n" +
-                        "2\uFE0F⃣: vk.com/юзернейм\n\n" +
+                        "1\uFE0F⃣: https://vk.com/username\n\n" +
+                        "2\uFE0F⃣: vk.com/username\n\n" +
                         "3\uFE0F⃣: @username");
             }
 
             else if (text.matches(".*vk.com/.*") || text.matches("@.*")) {
-                vkId = parseVkId(text);
+                vkId = vkService.resolveId(parseVkId(text), "user");
                 sendButton(chatId, "Чтобы привязать свой VK нажмите на кнопку ниже:", "Привязать VK", "addUser_" + vkId);
             }
 
@@ -135,7 +135,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
 
             if (data.startsWith("join_")) {
-                String vkId = data.substring(5);
+                String vkId = vkService.resolveId(data.substring(5), "user");
                 boolean ok;
                 if (contestService.repo.findByTelegramId(userId).isPresent())
                 {
@@ -145,12 +145,12 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 {
                     ok = contestService.addParticipant(userId, username, vkId);
                 }
-                reply(chatId, ok ? "Ты участвуешь в конкурсе 🎉" : "Ты уже участвуешь!");
+                reply(chatId, ok ? "Ты участвуешь в конкурсе \uD83E\uDD73" : "Ты уже участвуешь!");
             }
 
             if (data.startsWith("addUser_"))
             {
-                String vkId = data.substring(8);
+                String vkId = vkService.resolveId(data.substring(8), "user");
                 System.out.println(vkId);
                 if(contestService.repo.findByTelegramId(userId).isPresent()) {
                     if (checkSubscriptionsBool(userId, contestService.repo.findByTelegramId(userId).get().getVk_id())) {
