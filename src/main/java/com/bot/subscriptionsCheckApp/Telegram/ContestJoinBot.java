@@ -152,14 +152,25 @@ public class ContestJoinBot extends TelegramLongPollingBot
             {
                 String vkId = data.substring(8);
                 System.out.println(vkId);
-
-                if(checkSubscriptionsBool(userId, contestService.repo.findByTelegramId(userId).get().getVk_id()))
-                {
-                    boolean ok = contestService.addUser(userId, username, vkId);
-                    reply(chatId, ok ? "Страница в VK успешно привязана \uD83E\uDD73" : "Ошибка, обратитесь к @mollen44 в Telegram, чтобы привязать страницу.");
+                if(contestService.repo.findByTelegramId(userId).isPresent()) {
+                    if (checkSubscriptionsBool(userId, contestService.repo.findByTelegramId(userId).get().getVk_id())) {
+                        boolean ok = contestService.addUser(userId, username, vkId);
+                        reply(chatId, ok ? "Страница в VK успешно привязана \uD83E\uDD73" : "Ошибка, обратитесь к @mollen44 в Telegram, чтобы привязать страницу.");
+                    }
+                    else
+                    {
+                        checkSubscriptionsOutputCheck(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
+                    }
                 }
-                else
+                else //
                 {
+                    ContestUser user = ContestUser.builder()
+                                    .telegramId(userId)
+                                    .telegramUsername(username)
+                                    .vk_id(vkId)
+                                    .time_joined(LocalDateTime.now())
+                                    .isParticipates(false).build();
+                    contestService.repo.save(user);
                     checkSubscriptionsOutputCheck(chatId, userId, contestService.repo.findByTelegramId(userId).get().getVk_id());
                 }
             }
