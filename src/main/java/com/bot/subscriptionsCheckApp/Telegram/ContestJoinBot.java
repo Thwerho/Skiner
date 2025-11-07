@@ -5,7 +5,6 @@ import com.bot.subscriptionsCheckApp.Config.VkProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
 import com.bot.subscriptionsCheckApp.Models.ContestUser;
-import com.bot.subscriptionsCheckApp.Repos.ContestUserRepository;
 import com.bot.subscriptionsCheckApp.Service.*;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
