@@ -65,7 +65,9 @@ public class VkService {
         String screenName = id.replaceAll("https?://vk.com/", "")
                 .replaceAll("vk.com/", "")
                 .replaceAll("[^a-zA-Z0-9_]", "")
-                .replaceAll("@", "");
+                .replaceAll("@", "")
+                .replaceAll("@id", "")
+                .replaceAll("id", "");
 
         Map<?, ?> res = http.get()
                 .uri(uriBuilder -> uriBuilder.path("/utils.resolveScreenName")

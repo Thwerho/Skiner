@@ -5,6 +5,7 @@ import com.bot.subscriptionsCheckApp.Config.VkProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
 import com.bot.subscriptionsCheckApp.Models.ContestUser;
+import com.bot.subscriptionsCheckApp.Repos.ContestUserRepository;
 import com.bot.subscriptionsCheckApp.Service.*;
 import com.bot.subscriptionsCheckApp.listener.JoinRequestListener;
 import jakarta.annotation.PostConstruct;
@@ -61,7 +62,8 @@ public class ContestJoinBot extends TelegramLongPollingBot
 
             if ((text.matches("/start") || text.isEmpty() || text.matches(".*")) &&
                     !(text.matches("/media") || text.matches("/check_subscriptions")
-                    ||text.matches("/add_vk") || text.matches(".*vk.com/.*") || text.matches("@.*")))
+                    || text.matches("/add_vk") || text.matches(".*vk.com/.*") || text.matches("@.*")
+                    || text.matches("/contest_users")))
             {
                 reply(chatId, "Привет! Для взаимодействия с ботом используйте кнопки в меню.\n");
             }
@@ -114,6 +116,17 @@ public class ContestJoinBot extends TelegramLongPollingBot
                     }
                 }
 
+            }
+
+            if (text.matches("/contest_users"))
+            {
+                List<ContestUser> users = contestService.repo.findAll();
+                sb.append("Список пользователей: \n");
+                for(ContestUser user : users)
+                {
+                    sb.append("Id: " + user.getId() + ", telegram id: " + user.getTelegramId() + "\n");
+                }
+                reply(chatId, sb.toString());
             }
         }
 
