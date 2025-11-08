@@ -125,7 +125,8 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 {
                     if(user.isParticipates())
                     {
-                        sb.append("Id: " + user.getId() + ", telegram id: @" + user.getTelegramUsername() + "\n");
+                        sb.append("Id: " + user.getId() + ", telegram id: @" + user.getTelegramUsername() +
+                                ", vk.com/id" + user.getVk_id() +"\n");
                     }
                 }
                 reply(chatId, sb.toString());
