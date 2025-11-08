@@ -123,7 +123,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
                 sb.append("Список пользователей: \n");
                 for(ContestUser user : users)
                 {
-                    sb.append("Id: " + user.getId() + ", telegram id: " + user.getTelegramId() + "\n");
+                    sb.append("Id: " + user.getId() + ", telegram id: @" + user.getTelegramUsername() + "\n");
                 }
                 reply(chatId, sb.toString());
             }
