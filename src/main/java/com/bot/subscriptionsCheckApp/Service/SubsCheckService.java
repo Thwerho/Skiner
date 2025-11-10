@@ -28,7 +28,7 @@ public class SubsCheckService
     private final VkProperties vkProps;
 
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 45000)
     public void handleGroupLeave()
     {
         log.info("Subscriptions check...");

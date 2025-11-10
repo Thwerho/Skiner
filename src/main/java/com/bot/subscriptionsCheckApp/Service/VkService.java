@@ -59,7 +59,7 @@ public class VkService {
      * @param expectedType "user" или "group"
      */
     public String resolveId(String id, String expectedType) {
-        // если уже число → возвращаем как есть
+        // если уже число -> возвращаем как есть
         if (id.matches("\\d+")) return id;
 
         String screenName = id.replaceAll("https?://vk.com/", "")
