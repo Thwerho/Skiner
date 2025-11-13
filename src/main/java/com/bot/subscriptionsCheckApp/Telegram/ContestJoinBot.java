@@ -2,6 +2,7 @@ package com.bot.subscriptionsCheckApp.Telegram;
 
 import com.bot.subscriptionsCheckApp.Config.BotProperties;
 import com.bot.subscriptionsCheckApp.Config.VkProperties;
+import com.bot.subscriptionsCheckApp.Config.YoutubeProperties;
 import com.bot.subscriptionsCheckApp.DTO.ChannelConfig;
 import com.bot.subscriptionsCheckApp.DTO.GroupConfig;
 import com.bot.subscriptionsCheckApp.Models.ContestUser;
@@ -29,6 +30,7 @@ public class ContestJoinBot extends TelegramLongPollingBot
 {
     private final BotProperties props;
     private final VkProperties vkProps;
+    private final YoutubeProperties youtubeProps;
     private final VkService vkService;
     private final TgService tgService;
     private final ContestService contestService;
@@ -84,6 +86,13 @@ public class ContestJoinBot extends TelegramLongPollingBot
                     sb.append("<b><i><a href=\"https://vk.com/")
                             .append(group.getId()).append("\">")
                             .append(group.getName()).append("</a></i></b>\n");
+                }
+
+                sb.append("✔\uFE0FКанал на <b>YouTube</b>");
+                for(YoutubeProperties channel : youtubeProps.getChannels())
+                {
+                    sb.append("<b><i><a href=\"").append(channel.getLink()).append("\">")
+                            .append(channel.getName()).append("</a></i></b>\n");
                 }
 
                 reply(chatId, sb.toString());

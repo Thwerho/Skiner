@@ -26,3 +26,8 @@ vk:
   groups:
     - id: "fh_electro"
       name: "Федерация Хоккея городского округа Электросталь"
+
+youtube:
+  channels:
+    - link: "https://www.youtube.com/channel/UCeuUuSZgiDvy35k95NF6IUA"
+      name: "Федерация Хоккея городского округа Электросталь"
